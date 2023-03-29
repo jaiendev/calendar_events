@@ -306,7 +306,10 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
             ekEvent?.calendar = ekCalendar!
         }
         ekEvent?.isAllDay = isAllDay
-
+        print("ekCalendar")
+        print(ekCalendar)
+        print("ekEvent")
+        print(ekEvent)
         if(location != nil) {
             ekEvent!.location = location
         }
