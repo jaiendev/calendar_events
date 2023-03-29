@@ -284,32 +284,24 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         let url = event.url
 
         let ekCalendar = self.eventStore.calendar(withIdentifier: calendarId)
-        //        if (!(ekCalendar!.allowsContentModifications)) {
-        //            return
-        //        }
 
         var ekEvent: EKEvent?
         if(eventId == nil) {
             ekEvent = EKEvent.init(eventStore: self.eventStore)
         } else {
             ekEvent = self.eventStore.event(withIdentifier: eventId!)
-            //            if(ekEvent == nil) {
-            //                return
-            //            }
         }
 
         ekEvent?.title = title
         ekEvent?.notes = description
-        ekEvent?.startDate = startDate
-        ekEvent?.endDate = endDate
+        ekEvent!.startDate = startDate
+        ekEvent!.endDate = endDate
+        print("ekCalendar \(ekCalendar)")
         if(ekCalendar != nil){
-            ekEvent?.calendar = ekCalendar!
+            ekEvent!.calendar = ekCalendar!
         }
         ekEvent?.isAllDay = isAllDay
-        print("ekCalendar")
-        print(ekCalendar)
         print("ekEvent")
-        print(ekEvent)
         if(location != nil) {
             ekEvent!.location = location
         }
