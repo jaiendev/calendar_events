@@ -140,7 +140,7 @@ class CalendarPlugin {
         },
       );
     } catch (e) {
-      print(e);
+      print("Create Error $e");
     }
     return eventId;
   }
@@ -175,7 +175,7 @@ class CalendarPlugin {
         },
       );
     } catch (e) {
-      print(e);
+      print('Update $e');
     }
     return eventId;
   }

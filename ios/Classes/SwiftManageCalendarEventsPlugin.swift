@@ -296,12 +296,9 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         ekEvent?.notes = description
         ekEvent!.startDate = startDate
         ekEvent!.endDate = endDate
-        print("ekCalendar \(ekCalendar)")
-        if(ekCalendar != nil){
-            ekEvent!.calendar = ekCalendar!
-        }
+        ekEvent!.calendar = ekCalendar!
+
         ekEvent?.isAllDay = isAllDay
-        print("ekEvent")
         if(location != nil) {
             ekEvent!.location = location
         }
