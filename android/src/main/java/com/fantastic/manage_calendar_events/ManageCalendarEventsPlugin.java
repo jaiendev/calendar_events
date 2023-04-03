@@ -129,7 +129,6 @@ public class ManageCalendarEventsPlugin implements FlutterPlugin, ActivityAware,
             CalendarEvent event = new CalendarEvent(eventId, title, description, startDate,
                     endDate, location, url, isAllDay, hasAlarm);
             operations.createUpdateEvent(calendarId, event);
-            Log.d("attendees", call.hasArgument("attendees").toString());
             if (call.hasArgument("attendees")) {
                 addAttendees(event.getEventId(), call);
             }
@@ -176,7 +175,7 @@ public class ManageCalendarEventsPlugin implements FlutterPlugin, ActivityAware,
         List<CalendarEvent.Attendee> attendees = new ArrayList<>();
         List<Map<String, Object>> jsonList = call.argument("attendees");
         for (Map<String, Object> map : jsonList) {
-            String name = (String) map.get("name");
+            String name = (String) map.get("name") ;
             String emailAddress = (String) map.get("emailAddress");
             boolean isOrganiser = (boolean) map.get("isOrganiser");
             attendees.add(new CalendarEvent.Attendee(name, emailAddress, isOrganiser));
