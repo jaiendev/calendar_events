@@ -129,7 +129,7 @@ public class ManageCalendarEventsPlugin implements FlutterPlugin, ActivityAware,
             CalendarEvent event = new CalendarEvent(eventId, title, description, startDate,
                     endDate, location, url, isAllDay, hasAlarm);
             operations.createUpdateEvent(calendarId, event);
-            Log.d("attendees", call.hasArgument("attendees"));
+            Log.d("attendees", call.hasArgument("attendees").toString());
             if (call.hasArgument("attendees")) {
                 addAttendees(event.getEventId(), call);
             }
