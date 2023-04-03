@@ -174,7 +174,7 @@ public class ManageCalendarEventsPlugin implements FlutterPlugin, ActivityAware,
     private void addAttendees(String eventId, MethodCall call) {
         List<CalendarEvent.Attendee> attendees = new ArrayList<>();
         List<Map<String, Object>> jsonList = call.argument("attendees");
-         Log.d("jsonList", jsonList.toString());
+         
         if(jsonList == null) return;
         for (Map<String, Object> map : jsonList) {
             String name = (String) map.get("name") ;
