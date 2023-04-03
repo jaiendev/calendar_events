@@ -249,6 +249,7 @@ public class CalendarOperations {
                         + " = " + eventId;
 
         int updCount = ctx.getContentResolver().delete(uri, selection, null);
+        Log.d("updCount", updCount.toString());
         return updCount != 0;
     }
 
