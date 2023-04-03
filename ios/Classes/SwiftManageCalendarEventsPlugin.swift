@@ -296,7 +296,9 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         ekEvent?.notes = description
         ekEvent!.startDate = startDate
         ekEvent!.endDate = endDate
-        ekEvent!.calendar = ekCalendar!
+        if(ekCalendar != nil){
+            ekEvent?.calendar = ekCalendar!
+        }
 
         ekEvent?.isAllDay = isAllDay
         if(location != nil) {
@@ -325,6 +327,8 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         let ekEvent = self.eventStore.event(withIdentifier: eventId)
 
         do {
+            if(ekEvent == nil) return true;
+
             try self.eventStore.remove(ekEvent!, span: .futureEvents)
             return true
         } catch {
