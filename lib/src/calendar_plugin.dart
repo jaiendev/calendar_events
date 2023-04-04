@@ -114,7 +114,6 @@ class CalendarPlugin {
   Future<String?> createEvent({
     required String title,
     required String description,
-    required String offerId,
     DateTime? startTime,
     DateTime? endTime,
     String? url,
