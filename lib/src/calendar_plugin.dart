@@ -142,7 +142,7 @@ class CalendarPlugin {
     String? eventId;
 
     final List<Calendar> listCalendar = await getCalendars() ?? [];
-    print("listCalendar $listCalendar");
+
     if (listCalendar.isEmpty ||
         listCalendar[0].id == null ||
         listCalendar[0].id!.isEmpty) return null;
