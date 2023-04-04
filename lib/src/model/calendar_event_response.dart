@@ -27,8 +27,8 @@ class CalendarEventResponse {
 
   factory CalendarEventResponse.fromMap(Map<String, dynamic> map) {
     return CalendarEventResponse(
-      eventId: map['eventId'] as String,
-      calendarId: map['calendarId'] as String,
+      eventId: map['eventId'] ?? "",
+      calendarId: map['calendarId'] ?? "",
     );
   }
 
