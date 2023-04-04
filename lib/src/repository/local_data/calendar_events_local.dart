@@ -1,9 +1,4 @@
-// Package imports:
-import 'package:hive/hive.dart';
-
-// Project imports:
-import 'package:manage_calendar_events/src/constants/local_key.dart';
-import 'package:manage_calendar_events/src/model/local_calendar_model.dart';
+part of manage_calendar_events;
 
 class CalendarEventsLocal {
   var box = Hive.box(LocalKeys.boxCalendar);
