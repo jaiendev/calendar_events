@@ -1,11 +1,9 @@
 part of manage_calendar_events;
 
 class BaseLocalRepository {
-  static Future<String> get localStoreDirAskany async =>
-      '${(await getApplicationSupportDirectory()).path}/hive';
 
   Future<void> initialBox() async {
-    final String path = await localStoreDirAskany;
+    final String path = '${(await getApplicationSupportDirectory()).path}/hive';
 
     Hive.init(path);
     await Hive.openBox(LocalKeys.boxCalendar);
