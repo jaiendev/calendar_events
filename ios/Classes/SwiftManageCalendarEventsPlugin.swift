@@ -165,13 +165,17 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
     }
 
     private func requestPermissions() -> Bool {
-        if hasEventPermissions()  {
+        if hasPermissions()  {
           return true
         }
+
+        var isGranted = false;
         eventStore.requestAccess(to: .event, completion: {
             (accessGranted: Bool, _: Error?) in
-            return accessGranted
+            isGranted = accessGranted
         })
+
+        return isGranted
     }
 
     private func getCalendars() -> String? {
