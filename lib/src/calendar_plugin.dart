@@ -112,28 +112,60 @@ class CalendarPlugin {
 
   /// Helps to create an event in the selected calendar
   Future<String?> createEvent({
-    required String calendarId,
-    required CalendarEvent event,
+    required String title,
+    required String description,
+    required String offerId,
+    DateTime? startTime,
+    DateTime? endTime,
+    String? url,
+    Attendees? attendees,
+    Reminder? reminder,
+    Function()? handleFail,
+    Function()? handleExisted,
+    Function()? handleSuccess,
   }) async {
-    String? eventId;
+      final CalendarEvent newEvent = CalendarEvent(
+      title: title,
+      description: description,
+      startDate: startTime ?? DateTime.now(),
+      endDate: endTime ??
+          DateTime.now().add(
+            const Duration(minutes: delayHalfMinute),
+          ),
+      location: 'Askany App',
+      url: url,
+      attendees: attendees ??
+          Attendees(
+            attendees: [
+              Attendee(name: "Askany", emailAddress: "abc@gmail.com"),
+            ],
+          ),
+      reminder: reminder ?? Reminder(minutes: delayHalfMinute),
+    );
+
+   String? eventId;
+
+    final List<Calendar> listCalendar = await getCalendars() ?? [];
+
+    if(listCalendar.isEmpty && listCalendar[0].id != null && listCalendar[0].id!.isEmpty) return null;
 
     try {
       eventId = await _channel.invokeMethod(
         'createEvent',
         <String, Object?>{
-          'calendarId': calendarId,
-          'eventId': event.eventId != null ? event.eventId : null,
-          'title': event.title,
-          'description': event.description,
-          'startDate': event.startDate!.millisecondsSinceEpoch,
-          'endDate': event.endDate!.millisecondsSinceEpoch,
-          'location': event.location,
-          'isAllDay': event.isAllDay != null ? event.isAllDay : false,
-          'hasAlarm': event.hasAlarm != null ? event.hasAlarm : false,
-          'url': event.url,
-          'reminder': event.reminder != null ? event.reminder!.minutes : null,
-          'attendees': event.attendees != null
-              ? event.attendees!.attendees
+          'calendarId': listCalendar[0].id,
+          'eventId': newEvent.eventId != null ? newEvent.eventId : null,
+          'title': newEvent.title,
+          'description': newEvent.description,
+          'startDate': newEvent.startDate!.millisecondsSinceEpoch,
+          'endDate': newEvent.endDate!.millisecondsSinceEpoch,
+          'location': newEvent.location,
+          'isAllDay': newEvent.isAllDay != null ? newEvent.isAllDay : false,
+          'hasAlarm': newEvent.hasAlarm != null ? newEvent.hasAlarm : false,
+          'url': newEvent.url,
+          'reminder': newEvent.reminder != null ? newEvent.reminder!.minutes : null,
+          'attendees': newEvent.attendees != null
+              ? newEvent.attendees!.attendees
                   .map((attendee) => attendee.toJson())
                   .toList()
               : null,

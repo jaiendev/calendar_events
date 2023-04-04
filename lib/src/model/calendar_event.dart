@@ -53,6 +53,12 @@ class CalendarEvent {
     }
   }
 
+  @override
+  String toString() {
+    return 'CalendarEvent(eventId: $eventId, title: $title, description: $description, startDate: $startDate, endDate: $endDate, location: $location, duration: $duration, isAllDay: $isAllDay, hasAlarm: $hasAlarm, url: $url, reminder: $reminder, attendees: $attendees)';
+  }
+
+
   setReminder(Reminder reminder) {
     this.reminder = reminder;
   }
@@ -64,6 +70,9 @@ class Reminder {
   Reminder({required this.minutes});
 
   Reminder.fromJson(Map<String, dynamic> data) : this.minutes = data['minutes'];
+
+    @override
+  String toString() => 'Reminder(minutes: $minutes)';
 }
 
 class Attendees {
@@ -81,6 +90,9 @@ class Attendees {
     });
     return Attendees(attendees: attendees);
   }
+
+    @override
+  String toString() => 'Attendees(attendees: $attendees)';
 }
 
 class Attendee {
