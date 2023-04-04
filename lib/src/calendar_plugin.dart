@@ -111,7 +111,7 @@ class CalendarPlugin {
   }
 
   /// Helps to create an event in the selected calendar
-  Future<String?> createEvent({
+  Future<CalendarEventResponse?> createEvent({
     required String title,
     required String description,
     DateTime? startTime,
@@ -123,7 +123,7 @@ class CalendarPlugin {
     Function()? handleExisted,
     Function()? handleSuccess,
   }) async {
-      final CalendarEvent newEvent = CalendarEvent(
+    final CalendarEvent newEvent = CalendarEvent(
       title: title,
       description: description,
       startDate: startTime ?? DateTime.now(),
@@ -142,11 +142,13 @@ class CalendarPlugin {
       reminder: reminder ?? Reminder(minutes: delayHalfMinute),
     );
 
-   String? eventId;
+    String? eventId;
 
     final List<Calendar> listCalendar = await getCalendars() ?? [];
 
-    if(listCalendar.isEmpty && listCalendar[0].id != null && listCalendar[0].id!.isEmpty) return null;
+    if (listCalendar.isEmpty &&
+        listCalendar[0].id != null &&
+        listCalendar[0].id!.isEmpty) return null;
 
     try {
       eventId = await _channel.invokeMethod(
@@ -162,7 +164,8 @@ class CalendarPlugin {
           'isAllDay': newEvent.isAllDay != null ? newEvent.isAllDay : false,
           'hasAlarm': newEvent.hasAlarm != null ? newEvent.hasAlarm : false,
           'url': newEvent.url,
-          'reminder': newEvent.reminder != null ? newEvent.reminder!.minutes : null,
+          'reminder':
+              newEvent.reminder != null ? newEvent.reminder!.minutes : null,
           'attendees': newEvent.attendees != null
               ? newEvent.attendees!.attendees
                   .map((attendee) => attendee.toJson())
@@ -173,7 +176,10 @@ class CalendarPlugin {
     } catch (e) {
       print("Create Error $e");
     }
-    return eventId;
+    return CalendarEventResponse(
+      calendarId: listCalendar[0].id ?? '',
+      eventId: eventId ?? '',
+    );
   }
 
   /// Helps to update the edited event

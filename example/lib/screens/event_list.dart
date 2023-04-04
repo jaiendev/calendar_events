@@ -37,7 +37,7 @@ class _EventListState extends State<EventList> {
                 confirmDismiss: (direction) async {
                   if (DismissDirection.startToEnd == direction) {
                     setState(() {
-                      _deleteEvent(event.eventId!);
+                      // _deleteEvent(event.eventId!);
                     });
 
                     return true;
@@ -98,7 +98,7 @@ class _EventListState extends State<EventList> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          _addEvent();
+          // _addEvent();z
         },
       ),
     );
@@ -127,39 +127,39 @@ class _EventListState extends State<EventList> {
     );
   }
 
-  void _addEvent() async {
-    DateTime startDate = DateTime.now();
-    DateTime endDate = startDate.add(Duration(hours: 3));
-    CalendarEvent _newEvent = CalendarEvent(
-      title: 'Event from plugin',
-      description: 'test plugin description',
-      startDate: startDate,
-      endDate: endDate,
-      location: 'Chennai, Tamilnadu',
-      url: 'https://www.google.com',
-      attendees: Attendees(
-        attendees: [
-          Attendee(emailAddress: 'test1@gmail.com', name: 'Test1'),
-          Attendee(emailAddress: 'test2@gmail.com', name: 'Test2'),
-        ],
-      ),
-    );
-    _myPlugin
-        .createEvent(calendarId: widget.calendarId, event: _newEvent)
-        .then((evenId) {
-      setState(() {
-        debugPrint('Event Id is: $evenId');
-      });
-    });
-  }
+  // void _addEvent() async {
+  //   DateTime startDate = DateTime.now();
+  //   DateTime endDate = startDate.add(Duration(hours: 3));
+  //   CalendarEvent _newEvent = CalendarEvent(
+  //     title: 'Event from plugin',
+  //     description: 'test plugin description',
+  //     startDate: startDate,
+  //     endDate: endDate,
+  //     location: 'Chennai, Tamilnadu',
+  //     url: 'https://www.google.com',
+  //     attendees: Attendees(
+  //       attendees: [
+  //         Attendee(emailAddress: 'test1@gmail.com', name: 'Test1'),
+  //         Attendee(emailAddress: 'test2@gmail.com', name: 'Test2'),
+  //       ],
+  //     ),
+  //   );
+    // _myPlugin
+    //     .createEvent(calendarId: widget.calendarId, event: _newEvent)
+    //     .then((evenId) {
+    //   setState(() {
+    //     debugPrint('Event Id is: $evenId');
+    //   });
+    // });
+  // }
 
-  void _deleteEvent(String eventId) async {
-    _myPlugin
-        .deleteEvent(calendarId: widget.calendarId, eventId: eventId)
-        .then((isDeleted) {
-      debugPrint('Is Event deleted: $isDeleted');
-    });
-  }
+  // void _deleteEvent(String eventId) async {
+  //   _myPlugin
+  //       .deleteEvent(calendarId: widget.calendarId, eventId: eventId)
+  //       .then((isDeleted) {
+  //     debugPrint('Is Event deleted: $isDeleted');
+  //   });
+  // }
 
   void _updateEvent(CalendarEvent event) async {
     event.title = 'Updated from Event';
