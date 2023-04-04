@@ -143,8 +143,8 @@ class CalendarPlugin {
 
     final List<Calendar> listCalendar = await getCalendars() ?? [];
 
-    if (listCalendar.isEmpty &&
-        listCalendar[0].id != null &&
+   if (listCalendar.isEmpty ||
+        listCalendar[0].id != null ||
         listCalendar[0].id!.isEmpty) return null;
 
     try {
