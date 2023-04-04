@@ -22,14 +22,16 @@ class CalendarPlugin {
   }
 
   /// Request the app to fetch the permissions to access the calendar
-  Future<void> requestPermissions() async {
+  Future<bool?> requestPermissions() async {
+     bool? hasPermission = false;
     try {
-      await _channel.invokeMethod('requestPermissions');
+      hasPermission = await _channel.invokeMethod('requestPermissions');
+      print("hasPermission $hasPermission");
     } catch (e) {
       print(e);
     }
 
-    return;
+    return hasPermission;
   }
 
   /// Returns the available calendars from the device

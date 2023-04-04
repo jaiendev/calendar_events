@@ -51,9 +51,9 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         if (call.method == "getPlatformVersion") {
             result("iOS " + UIDevice.current.systemVersion)
         } else if (call.method == "hasPermissions") {
-            result(self.hasPermissions())
+            hasPermissions(result)
         } else if (call.method == "requestPermissions") {
-            self.requestPermissions()
+            requestPermissions(result)
         } else if (call.method == "getCalendars") {
             let calendarArrayList = self.getCalendars()
             result(calendarArrayList)
@@ -159,15 +159,23 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
     }
 
 
-    private func hasPermissions() -> Bool {
+     private func hasPermissions(_ result: FlutterResult) {
+        let hasPermissions = hasEventPermissions()
+        result(hasPermissions)
+    }
+
+       private func hasEventPermissions() -> Bool {
         let status = EKEventStore.authorizationStatus(for: .event)
         return status == EKAuthorizationStatus.authorized
     }
 
-    private func requestPermissions() {
+    private func requestPermissions(_ result: @escaping FlutterResult) {
+        if hasEventPermissions()  {
+            result(true)
+        }
         eventStore.requestAccess(to: .event, completion: {
-            (accessGranted: Bool, error: Error?) in
-            print("Access Granted")
+            (accessGranted: Bool, _: Error?) in
+            result(accessGranted)
         })
     }
 

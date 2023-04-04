@@ -474,4 +474,23 @@ public class CalendarOperations {
         return updCount;
     }
 
+    // fun requestPermissions(pendingChannelResult: MethodChannel.Result) {
+    //     if (arePermissionsGranted()) {
+    //         finishWithSuccess(true, pendingChannelResult)
+    //     } else {
+    //         val parameters = CalendarMethodsParametersCacheModel(pendingChannelResult, REQUEST_PERMISSIONS_REQUEST_CODE)
+    //         requestPermissions(parameters)
+    //     }
+    // }
+
+    // private fun arePermissionsGranted(): Boolean {
+    // if (atLeastAPI(23) && _binding != null) {
+    //     val writeCalendarPermissionGranted = _binding!!.activity.checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED
+    //     val readCalendarPermissionGranted = _binding!!.activity.checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED
+    //     return writeCalendarPermissionGranted && readCalendarPermissionGranted
+    // }
+
+    //     return true
+    // }
+
 }
