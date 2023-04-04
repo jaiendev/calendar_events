@@ -119,9 +119,6 @@ class CalendarPlugin {
     String? url,
     Attendees? attendees,
     Reminder? reminder,
-    Function()? handleFail,
-    Function()? handleExisted,
-    Function()? handleSuccess,
   }) async {
     final CalendarEvent newEvent = CalendarEvent(
       title: title,
@@ -176,6 +173,7 @@ class CalendarPlugin {
     } catch (e) {
       print("Create Error $e");
     }
+
     return CalendarEventResponse(
       calendarId: listCalendar[0].id ?? '',
       eventId: eventId ?? '',
