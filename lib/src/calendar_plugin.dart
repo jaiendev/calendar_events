@@ -246,8 +246,6 @@ class CalendarPlugin {
 
   /// Deletes the selected event in the selected calendar
   Future<void> deleteEvent({
-    required String calendarId,
-    required String eventId,
     required String userId,
     required String offerId,
     Function()? handleFail,
@@ -261,12 +259,12 @@ class CalendarPlugin {
 
     if (calendarEvent != null) {
       final List<CalendarEvent>? calendarEvents =
-          await getEvents(calendarId: calendarId);
+          await getEvents(calendarId: calendarEvent.calendarId);
       final List<String?> eventIds = (calendarEvents ?? [])
           .map((calendarEvent) => calendarEvent.eventId)
           .toList();
 
-      if (!eventIds.contains(eventId)) {
+      if (!eventIds.contains(calendarEvent.eventId)) {
         CalendarEventsLocal().putCalendarEvent(
           calendarLocalModel: calendarEvent,
           userId: userId,
@@ -283,8 +281,8 @@ class CalendarPlugin {
         final bool? isDeleted = await _channel.invokeMethod(
           'deleteEvent',
           <String, Object?>{
-            'calendarId': calendarId,
-            'eventId': eventId,
+            'calendarId': calendarEvent.calendarId,
+            'eventId': calendarEvent.eventId,
           },
         );
         if (isDeleted ?? false) {
