@@ -53,7 +53,7 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         } else if (call.method == "hasPermissions") {
             result(self.hasPermissions())
         } else if (call.method == "requestPermissions") {
-           result(self.requestPermissions())
+            self.requestPermissions()
         } else if (call.method == "getCalendars") {
             let calendarArrayList = self.getCalendars()
             result(calendarArrayList)
@@ -164,20 +164,13 @@ public class SwiftManageCalendarEventsPlugin: NSObject, FlutterPlugin {
         return status == EKAuthorizationStatus.authorized
     }
 
-  private func requestPermissions() async -> Bool {
-        if hasPermissions()  {
-          return true
-        }
-
-        var isGranted = false;
-       await eventStore.requestAccess(to: .event, completion: {
-            (accessGranted: Bool, _: Error?) in
-            isGranted = accessGranted
+    private func requestPermissions() {
+        eventStore.requestAccess(to: .event, completion: {
+            (accessGranted: Bool, error: Error?) in
+            print("Access Granted")
         })
-
-        return isGranted
     }
-    
+
     private func getCalendars() -> String? {
         if(!hasPermissions()) {
             requestPermissions()
@@ -537,5 +530,4 @@ extension EKParticipant {
         return self.value(forKey: "isOrganiser") as? Bool
     }
 }
-
 

@@ -13,11 +13,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  # Cached
+  hive: ^2.2.3
+
+  # Path
+  path_provider: ^2.0.14
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_lints: ^2.0.0
+  import_sorter: ^4.6.0
 # The following section is specific to Flutter.
 flutter:
   # This section identifies this Flutter project as a plugin project.

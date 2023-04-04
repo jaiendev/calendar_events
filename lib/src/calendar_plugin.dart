@@ -22,16 +22,12 @@ class CalendarPlugin {
   }
 
   /// Request the app to fetch the permissions to access the calendar
-  Future<bool?> requestPermissions() async {
-     bool? hasPermission = false;
+  Future<void> requestPermissions() async {
     try {
-      hasPermission = await _channel.invokeMethod('requestPermissions');
-      print("hasPermission $hasPermission");
+      await _channel.invokeMethod('requestPermissions');
     } catch (e) {
       print(e);
     }
-
-    return hasPermission;
   }
 
   /// Returns the available calendars from the device
@@ -113,15 +109,31 @@ class CalendarPlugin {
   }
 
   /// Helps to create an event in the selected calendar
-  Future<CalendarEventResponse?> createEvent({
+  Future<void> createEvent({
     required String title,
     required String description,
+    required String offerId,
+    required String userId,
     DateTime? startTime,
     DateTime? endTime,
     String? url,
     Attendees? attendees,
     Reminder? reminder,
+    Function()? handleFail,
+    Function()? handleExisted,
+    Function()? handleSuccess,
   }) async {
+    if (CalendarEventsLocal().hasCalendarEvent(
+      offerId: offerId,
+      userId: userId,
+    )) {
+      if (handleExisted != null) {
+        handleExisted();
+      }
+
+      return;
+    }
+
     final CalendarEvent newEvent = CalendarEvent(
       title: title,
       description: description,
@@ -141,8 +153,6 @@ class CalendarPlugin {
       reminder: reminder ?? Reminder(minutes: delayHalfMinute),
     );
 
-    String? eventId;
-
     final List<Calendar> listCalendar = await getCalendars() ?? [];
 
     if (listCalendar.isEmpty ||
@@ -150,7 +160,7 @@ class CalendarPlugin {
         listCalendar[0].id!.isEmpty) return null;
 
     try {
-      eventId = await _channel.invokeMethod(
+      final String? eventId = await _channel.invokeMethod(
         'createEvent',
         <String, Object?>{
           'calendarId': listCalendar[0].id,
@@ -172,14 +182,31 @@ class CalendarPlugin {
               : null,
         },
       );
+
+      if (eventId != null && eventId.isNotEmpty) {
+        CalendarEventsLocal().putCalendarEvent(
+          calendarLocalModel: CalendarLocalModel(
+            offerId: offerId,
+            calendarId: listCalendar[0].id ?? "",
+            eventId: eventId,
+          ),
+          userId: '',
+        );
+
+        if (handleSuccess != null) {
+          handleSuccess();
+        }
+      } else {
+        if (handleFail != null) {
+          handleFail();
+        }
+      }
     } catch (e) {
       print("Create Error $e");
+      if (handleFail != null) {
+        handleFail();
+      }
     }
-
-    return CalendarEventResponse(
-      calendarId: listCalendar[0].id ?? '',
-      eventId: eventId ?? '',
-    );
   }
 
   /// Helps to update the edited event
@@ -218,32 +245,68 @@ class CalendarPlugin {
   }
 
   /// Deletes the selected event in the selected calendar
-  Future<bool?> deleteEvent({
+  Future<void> deleteEvent({
     required String calendarId,
     required String eventId,
+    required String userId,
+    required String offerId,
+    Function()? handleFail,
+    Function()? handleSuccess,
   }) async {
-    final List<CalendarEvent>? calendarEvents =
-        await getEvents(calendarId: calendarId);
-    final List<String?> eventIds = (calendarEvents ?? [])
-        .map((calendarEvent) => calendarEvent.eventId)
-        .toList();
+    final CalendarLocalModel? calendarEvent =
+        CalendarEventsLocal().getCalendarEvent(
+      offerId: offerId,
+      userId: userId,
+    );
 
-    if (!eventIds.contains(eventId)) return true;
+    if (calendarEvent != null) {
+      final List<CalendarEvent>? calendarEvents =
+          await getEvents(calendarId: calendarId);
+      final List<String?> eventIds = (calendarEvents ?? [])
+          .map((calendarEvent) => calendarEvent.eventId)
+          .toList();
 
-    bool? isDeleted = false;
+      if (!eventIds.contains(eventId)) {
+        CalendarEventsLocal().putCalendarEvent(
+          calendarLocalModel: calendarEvent,
+          userId: userId,
+        );
 
-    try {
-      isDeleted = await _channel.invokeMethod(
-        'deleteEvent',
-        <String, Object?>{
-          'calendarId': calendarId,
-          'eventId': eventId,
-        },
-      );
-    } catch (e) {
-      print(e);
+        if (handleSuccess != null) {
+          handleSuccess();
+        }
+
+        return;
+      }
+
+      try {
+        final bool? isDeleted = await _channel.invokeMethod(
+          'deleteEvent',
+          <String, Object?>{
+            'calendarId': calendarId,
+            'eventId': eventId,
+          },
+        );
+        if (isDeleted ?? false) {
+          CalendarEventsLocal().putCalendarEvent(
+            calendarLocalModel: calendarEvent,
+            userId: userId,
+          );
+
+          if (handleSuccess != null) {
+            handleSuccess();
+          }
+
+          return;
+        }
+      } catch (e) {
+        print(e);
+      }
     }
-    return isDeleted;
+
+    if (handleFail != null) {
+      handleFail();
+    }
   }
 
   /// Helps to add reminder in Android [add alarms in iOS]
