@@ -38,7 +38,7 @@ class CalendarPlugin {
     try {
       String calendarsJson = await _channel.invokeMethod('getCalendars');
       calendars = json.decode(calendarsJson).map<Calendar>((decodedCalendar) {
-        return Calendar.fromJson(decodedCalendar);
+        return Calendar.fromMap(decodedCalendar);
       }).toList();
     } catch (e) {
       print(e);
@@ -142,9 +142,9 @@ class CalendarPlugin {
     String? eventId;
 
     final List<Calendar> listCalendar = await getCalendars() ?? [];
-
-   if (listCalendar.isEmpty ||
-        listCalendar[0].id != null ||
+    print("listCalendar $listCalendar");
+    if (listCalendar.isEmpty ||
+        listCalendar[0].id == null ||
         listCalendar[0].id!.isEmpty) return null;
 
     try {
@@ -220,7 +220,16 @@ class CalendarPlugin {
     required String calendarId,
     required String eventId,
   }) async {
+    final List<CalendarEvent>? calendarEvents =
+        await getEvents(calendarId: calendarId);
+    final List<String?> eventIds = (calendarEvents ?? [])
+        .map((calendarEvent) => calendarEvent.eventId)
+        .toList();
+
+    if (!eventIds.contains(eventId)) return true;
+
     bool? isDeleted = false;
+
     try {
       isDeleted = await _channel.invokeMethod(
         'deleteEvent',
