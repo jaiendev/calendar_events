@@ -5,7 +5,7 @@ class CalendarPlugin {
       const MethodChannel('manage_calendar_events');
 
   Future<void> openLocal() async {
-   await BaseLocalRepository().initialBox();
+    BaseLocalRepository.instance.initialBox();
   }
 
   static Future<String?> get platformVersion async {
@@ -18,9 +18,7 @@ class CalendarPlugin {
     bool? hasPermission = false;
     try {
       hasPermission = await _channel.invokeMethod('hasPermissions');
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
 
     return hasPermission;
   }
@@ -29,28 +27,27 @@ class CalendarPlugin {
   Future<void> requestPermissions() async {
     try {
       await _channel.invokeMethod('requestPermissions');
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   /// Returns the available calendars from the device
   Future<List<Calendar>?> getCalendars() async {
     List<Calendar>? calendars = [];
+
     try {
       String calendarsJson = await _channel.invokeMethod('getCalendars');
       calendars = json.decode(calendarsJson).map<Calendar>((decodedCalendar) {
         return Calendar.fromMap(decodedCalendar);
       }).toList();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
+
     return calendars;
   }
 
   /// Returns all the available events in the selected calendar
   Future<List<CalendarEvent>?> getEvents({required String calendarId}) async {
     List<CalendarEvent>? events = [];
+
     try {
       String eventsJson = await _channel.invokeMethod(
           'getEvents', <String, Object?>{'calendarId': calendarId});
@@ -58,9 +55,8 @@ class CalendarPlugin {
           json.decode(eventsJson).map<CalendarEvent>((decodedCalendarEvent) {
         return CalendarEvent.fromJson(decodedCalendarEvent);
       }).toList();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
+
     return events;
   }
 
@@ -71,6 +67,7 @@ class CalendarPlugin {
     required DateTime endDate,
   }) async {
     List<CalendarEvent>? events = [];
+
     try {
       String eventsJson =
           await _channel.invokeMethod('getEventsByDateRange', <String, Object?>{
@@ -82,9 +79,8 @@ class CalendarPlugin {
           json.decode(eventsJson).map<CalendarEvent>((decodedCalendarEvent) {
         return CalendarEvent.fromJson(decodedCalendarEvent);
       }).toList();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
+
     return events;
   }
 
@@ -161,7 +157,7 @@ class CalendarPlugin {
 
     if (listCalendar.isEmpty ||
         listCalendar[0].id == null ||
-        listCalendar[0].id!.isEmpty) return null;
+        listCalendar[0].id!.isEmpty) return;
 
     try {
       final String? eventId = await _channel.invokeMethod(
@@ -194,7 +190,7 @@ class CalendarPlugin {
             calendarId: listCalendar[0].id ?? "",
             eventId: eventId,
           ),
-          userId: '',
+          userId: userId,
         );
 
         if (handleSuccess != null) {
@@ -206,7 +202,6 @@ class CalendarPlugin {
         }
       }
     } catch (e) {
-      print("Create Error $e");
       if (handleFail != null) {
         handleFail();
       }
@@ -242,9 +237,8 @@ class CalendarPlugin {
               : null,
         },
       );
-    } catch (e) {
-      print('Update $e');
-    }
+    } catch (e) {}
+
     return eventId;
   }
 
@@ -301,9 +295,7 @@ class CalendarPlugin {
 
           return;
         }
-      } catch (e) {
-        print(e);
-      }
+      } catch (e) {}
     }
 
     if (handleFail != null) {
@@ -326,9 +318,7 @@ class CalendarPlugin {
           'minutes': minutes.toString(),
         },
       );
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   /// Helps to update the selected reminder
@@ -347,9 +337,7 @@ class CalendarPlugin {
           'minutes': minutes.toString(),
         },
       );
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return updateCount;
   }
 
@@ -363,9 +351,7 @@ class CalendarPlugin {
           'eventId': eventId,
         },
       );
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return updateCount;
   }
 
@@ -382,9 +368,7 @@ class CalendarPlugin {
       attendees = json.decode(attendeesJson).map<Attendee>((decodedAttendee) {
         return Attendee.fromJson(decodedAttendee);
       }).toList();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
 
     return attendees;
   }
@@ -403,9 +387,7 @@ class CalendarPlugin {
               newAttendees.map((attendee) => attendee.toJson()).toList(),
         },
       );
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   /// Helps to remove an Attendee from an Event
@@ -421,15 +403,13 @@ class CalendarPlugin {
           'attendee': attendee.toJson(),
         },
       );
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   /// Find the first date of the month which contains the provided date.
   DateTime findFirstDateOfTheMonth(DateTime dateTime) {
     DateTime firstDayOfMonth = DateTime.utc(dateTime.year, dateTime.month, 1);
-    print('firstDayOfMonth - $firstDayOfMonth');
+
     return firstDayOfMonth;
   }
 
@@ -437,7 +417,7 @@ class CalendarPlugin {
   DateTime findLastDateOfTheMonth(DateTime dateTime) {
     DateTime lastDayOfMonth = DateTime.utc(dateTime.year, dateTime.month + 1, 1)
         .subtract(Duration(hours: 1));
-    print('lastDayOfMonth - $lastDayOfMonth');
+
     return lastDayOfMonth;
   }
 

@@ -6,11 +6,17 @@ class CalendarEventsLocal {
   bool hasCalendarEvent({
     required String userId,
     required String offerId,
-  }) =>
-      listCalendarEvent(userId: userId).indexWhere(
-        (calendar) => calendar.offerId == offerId,
-      ) !=
-      -1;
+  }) {
+    final List<CalendarLocalModel> calendarEvents = listCalendarEvent(
+      userId: userId,
+    );
+
+    final int index = calendarEvents.indexWhere(
+      (calendar) => calendar.offerId == offerId,
+    );
+
+    return index != -1;
+  }
 
   // Getter
   List<CalendarLocalModel> listCalendarEvent({required String userId}) {
